@@ -4,7 +4,6 @@
 - [Running the Application](#running-the-application)
 - [Configuration](#configuration)
 - [Database Migrations](#database-migrations)
-- [Translations](#translations)
 - [CI/CD](#cicd)
 
 ## Setup
