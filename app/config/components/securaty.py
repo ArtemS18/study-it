@@ -5,7 +5,7 @@ from config.constants import ENV_FILE_PATH
 
 
 class SecuratyConfig(BaseSettings):
-    jwt_access_expires_at: timedelta = timedelta(minutes=1)
+    jwt_access_expires_at: timedelta = timedelta(minutes=30)
     jwt_access_secret_key: str = "secret_key"
     jwt_access_algorithm: str = "HS256"
 
