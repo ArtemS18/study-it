@@ -1,17 +1,25 @@
 import typing
 from tortoise import fields
+from tortoise.fields.base import OnDelete
+from db.models.status import Status
 from db.models import base
 
 if typing.TYPE_CHECKING:
     from db.models.user import User
 
-class Progress(base.BaseMixin, base.BaseModel):
-    current_module: str = fields.CharField(max_length=128, null=True)
-    module_skill_learned: int = fields.SmallIntField()
-    module_progress: float = fields.FloatField()
 
-    user: fields.BackwardOneToOneRelation["User"]
+class UserModuleProgress(base.BaseMixin, base.BaseModel):
+    module_code = fields.CharField(max_length=128, index=True)
+    user: fields.ForeignKeyRelation["User"] = fields.ForeignKeyField(
+        "server.User", related_name="modules"
+    )
+    status: fields.ForeignKeyRelation["Status"] = fields.ForeignKeyField(
+        "server.Status", on_delete=OnDelete.SET_DEFAULT, default=1
+    )
 
-    def __str__():
-        return "progress"
+    class Meta:
+        table = "user_module_progress"
+        unique_together = (("user", "module_code"),)
 
+    def __str__(self):
+        return "user_module_progress"

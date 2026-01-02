@@ -2,8 +2,9 @@ import typing
 from tortoise import fields
 from db.models import base
 
-if typing.TYPE_CHECKING:
-    from db.models.progress import Progress
+from db.models.path import UserPath
+from db.models.progress import UserModuleProgress
+
 
 class User(base.BaseMixin, base.BaseModel):
     provider: str = fields.CharField(max_length=128, null=True)
@@ -12,10 +13,10 @@ class User(base.BaseMixin, base.BaseModel):
     lastname: str = fields.CharField(max_length=128)
     hashed_password: str = fields.CharField(max_length=128)
     email_verified: bool = fields.BooleanField(default=False)
+    have_active_path: bool = fields.BooleanField(default=False)
 
-    progress: fields.OneToOneRelation["Progress"] = fields.OneToOneField("server.Progress", "user")
-    
+    modules: fields.BackwardFKRelation[list["UserModuleProgress"]]
+    paths: fields.BackwardFKRelation[list["UserPath"]]
 
-    def __str__():
+    def __str__(self):
         return "user"
-

@@ -16,7 +16,8 @@ Pipfile.lock
 env3.*
 env
 docs_build
-venv
+.venv/
+.ruff_cache/
 docs.zip
 archive.zip
 .env

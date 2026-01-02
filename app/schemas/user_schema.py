@@ -3,17 +3,19 @@ from db import models
 from tortoise.contrib.pydantic import pydantic_model_creator
 
 _BaseUser = pydantic_model_creator(
-    models.User, 
-    name="BaseUser", 
-    exclude=["hashed_password", "provider", "email_verified"], 
-    exclude_readonly=True
+    models.User,
+    name="BaseUser",
+    exclude=["hashed_password", "provider", "email_verified"],
+    exclude_readonly=True,
 )
+
 
 class CreateUser(_BaseUser):
     password: str
 
+
 class OutUser(_BaseUser):
-    id: int 
+    id: int
     created_at: datetime
     updated_at: datetime
 
@@ -26,6 +28,5 @@ _OptionalUser = pydantic_model_creator(
     optional=tuple(models.User._meta.fields_map.keys()),
 )
 
-class UpdateUser(_OptionalUser):
-    ...
 
+class UpdateUser(_OptionalUser): ...

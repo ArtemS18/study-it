@@ -1,8 +1,10 @@
 from datetime import datetime
 from tortoise import models, fields
 
+
 class BaseModel(models.Model):
-    pass 
+    pass
+
 
 class BaseMixin(BaseModel):
     id: int = fields.BigIntField(primary_key=True)

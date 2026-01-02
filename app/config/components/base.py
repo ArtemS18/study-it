@@ -14,7 +14,5 @@ class BaseConfig(BaseSettings):
     cors_origins: list[str] = ["*"]
 
     model_config = SettingsConfigDict(
-        env_file=ENV_FILE_PATH,
-        env_file_encoding='utf-8',
-        extra="ignore"
+        env_file=ENV_FILE_PATH, env_file_encoding="utf-8", extra="ignore"
     )

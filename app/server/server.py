@@ -5,13 +5,14 @@ from tortoise import Tortoise, generate_config
 from tortoise.contrib.fastapi import RegisterTortoise
 from fastapi import FastAPI, Request, status
 from fastapi.middleware.cors import CORSMiddleware
-from neo4j_client.models import Skill
+from service.progress import create_user_path
 from config import settings
 from service import exception as service_exp
 
 
 def _init_router(_app: FastAPI) -> None:
     from api import router
+
     _app.include_router(router)
 
 
@@ -23,6 +24,7 @@ def _init_middleware(_app: FastAPI) -> None:
         allow_methods=settings.cors_allow_methods,
         allow_headers=settings.cors_allow_headers,
     )
+
 
 @asynccontextmanager
 async def lifespan_test(_app: FastAPI) -> AsyncGenerator[None, None]:
@@ -59,6 +61,8 @@ async def lifespan(_app: FastAPI) -> AsyncGenerator[None, None]:
                 generate_schemas=True,
                 add_exception_handlers=True,
             ):
+                p = await create_user_path(15, ["web_framework_basics"])
+                print(p)
                 yield
     except Exception as e:
         raise
@@ -78,7 +82,9 @@ def create_app() -> FastAPI:
 
     return _app
 
+
 app = create_app()
+
 
 @app.exception_handler(service_exp.ServiceExeption)
 async def validation_service_exp(req: Request, exption: service_exp.ServiceExeption):
@@ -87,23 +93,21 @@ async def validation_service_exp(req: Request, exption: service_exp.ServiceExept
             _exption: service_exp.NotFoundError = exption
             return JSONResponse(
                 status_code=status.HTTP_404_NOT_FOUND,
-                content={"detail": f"Object {_exption.name} not found"}
+                content={"detail": f"Object {_exption.name} not found"},
             )
         case service_exp.BadRequest:
             return JSONResponse(
                 status_code=status.HTTP_400_BAD_REQUEST,
-                content={"detail": "Bad request data"}
+                content={"detail": "Bad request data"},
             )
         case service_exp.BadCredentials:
             return JSONResponse(
                 status_code=status.HTTP_401_UNAUTHORIZED,
-                content={"detail": "Bad credentials"}
+                content={"detail": "Bad credentials"},
             )
         case service_exp.AlreadyExist:
             _exption: service_exp.AlreadyExist = exption
             return JSONResponse(
                 status_code=status.HTTP_409_CONFLICT,
-                content={"detail": f"Item {_exption.name} already exist"}
+                content={"detail": f"Item {_exption.name} already exist"},
             )
-        
-    
